@@ -1,0 +1,21 @@
+:- dynamic fact/2.
+
+fact(велоспорт, [category(велоспорт), seastype(летний), can(нужен_велосипед), place(уличный)]).
+fact(биатлон, [category(велоспорт), sport_type(лыжи), like(стрельба)]).
+fact(лыжные_гонки, [category(велоспорт), sport_type(лыжи)]).
+fact(горные_лыжи, [category(координационный_вид), sport_type(лыжи), like(горы)]).
+fact(плавание, [category(велоспорт), sport_type(водный_вид)]).
+fact(прыжки_в_длину, [category(скоростно-силовой_вид), sport_type(атлетика), place(внутренний), like(прыжки)]).
+fact(прыжки_с_шестом, [category(скоростно-силовой_вид), sport_type(атлетика), place(внутренний), like(прыжки), have(любит_летать)]).
+fact(бег, [category(велоспорт), sport_type(атлетика)]).
+fact(тяжелая_атлетика, [category(скоростно-силовой_вид), seastype(летний), place(внутренний)]).
+fact(каратэ, [category(единоборство), place(внутренний), can(ломать_дощечки)]).
+fact(бокс, [category(единоборство), seastype(летний), gender(мужчина), place(внутренний)]).
+fact(дзюдо, [category(единоборство), seastype(летний), can(кидать_людей), place(внутренний)]).
+fact(баскетбол, [category(спорт_игра), seastype(летний), sport_type(командный_вид), like(игра_с_мячом), have(высокий_рост)]).
+fact(теннис, [category(спорт_игра), seastype(летний), like(крик)]).
+fact(футбол, [category(спорт_игра), seastype(летний), sport_type(командный_вид), like(игра_с_мячом)]).
+fact(хоккей, [category(спорт_игра), seastype(зимний), sport_type(командный_вид), like(лед)]).
+fact(гольф, [category(спорт_игра), place(уличный)]).
+fact(борьба, [category(единоборство), seastype(летний), sport_type(атлетика), like(драка), have(борцовки), can(кидать_людей), gender(мужчина)]).
+
