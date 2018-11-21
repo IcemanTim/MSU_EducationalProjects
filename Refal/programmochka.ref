@@ -1,0 +1,913 @@
+PASSVSI START
+  EXTRN Opnput,Opnget,Clsget,Clsput,Libput,Libget,Br,Cp,Print,Dgall,p1,m1
+  ENTRY Go
+Go =  <Opnput 'refal_studio/papr.txt'><Opnget 'refal_studio/test.txt'>+
+      <probel <Libget>><Clsget> <Clsput><Opnget 'refal_studio/papr.txt'>+
+      <Opnput 'refal_studio/si.txt'><prog <Libget>><Clsget><Clsput>
+probel e1 = <Libput <prob e1>>
+prob e1 ' ' e2 = e1 <prob e2>
+     s1 e2 = s1 e2
+      = 
+
+prog e1 = <obrabotka1 <struct  <skobki e1> >>
+
+skobki e1 'program' e2 = <skobki e1 /program/ e2>
+       e1 'procedure' e2 = <skobki e1 /procedure/ e2>
+       e1 'function' e2 = <skobki e1/function/ e2>
+       e1 'writeln' e2 = <skobki e1 /writeln/ e2>
+       e1 'integer' e2 = <skobki e1 /integer/ e2>
+       e1 'boolean' e2 = <skobki e1 /boolean/ e2>
+       e1 'const' e2 = <skobki e1 /const/ e2>
+       e1 'var' e2 = <skobki e1 /var/ e2>   
+       e1 'begin' e2 = <skobki e1  /begin/ '(' e2>
+       e1 'endcase' e2 = <skobki e1 ')' /endcase/ e2>
+       e1 'end' e2 = <skobki e1 ')' /end/  e2>
+       e1 'repeat' e2 = <skobki e1 /repeat/ '(' e2>
+       e1 'until' e2 = <skobki e1 ')' /until/ e2>
+       e1 'while' e2 'do' e3 = <skobki e1 /while/ e2 /do/ e3>
+       e1 'for' e2 ':=' e3 'to' e4 'do' e5 +
+            = <skobki e1 /for/ e2 ':=' e3 /to/ e4 /do/ e5>
+       e1 'case' e2 'of' e3 = <skobki e1 /case/ e2 /of/ '(' e3>
+       e1 'if' e2 'then' e3 = <skobki e1 /if/ e2 /then/ '(' e3>
+       e1 'else' e2 = <skobki e1 ')' /else/ e2>
+       e1 'true' e2 = <skobki e1 /true/ e2>
+       e1 'false' e2 = <skobki e1 /false/ e2>
+       e1 = e1
+struct e1 ')' e2 = <struct <sko e1> e2>
+       e1 '(' e2 = <error 'disbalans skobok'>
+       e1 = e1
+sko R e1 '(' e2 = e1 ( e2 )
+      e1 = <error 'disbalans skobok'>
+obrabotka1 e1 = <print e1> <obrabotka e1>
+obrabotka /program/ s(L)1 e(LD)2 ';' e3 = <Br 'prob' '=' /0/> <con e3>
+          e1 = <error 'programma dolgna nachinatza so slova program'>
+con /const/ e1 /var/ e2 = <Libput 'const ' <consta e1>> <ost e2> 
+    /var/ e2 = <ost e2>
+    e1 = <error 'v nfchale po krainei mere var'>
+consta s(L)1 e(LD)2 '=' e('+-')3 s(D)4 e(D)5 ';' e6 +
+        = <Br s1 e2 '=' 'c'> s1 e2 '=' e3 s4 e5 <const1 e6> '; '
+      e1 = <error 'const razdel s oshibkoy1'>
+const1 s(L)1 e(LD)2 '=' e('+-')3 s(D)4 e(D)5 ';' e6 +
+         = <Br s1 e2 '=' 'c'> ',' s1 e2 '=' e3 s4 e5 <const1 e6>
+       s1 e2 = <error 'const razdel s oshibkoy2'>
+        =
+ost s(L)1 e(LD)2 ',' e3 ':' v9 ';' e4 +
+       = <Br s1 e2 '=' 'per' <smena v9>><var1 v9 '//' ',' e3> <var2 e4>    
+    s(L)1 e(LD)2  ':' v9 ';' e4 +
+       = <Br s1 e2 '=' 'per' <smena v9>> <var2 e4>         
+    e1 = <error 'var razdel s oshibkoy1'>
+var1  v9 '//' ',' s(L)1 e(LD)2 e3 = <Br s1 e2 '=' 'per' v9><var1 e3>
+      v9 '//' s1 e2 = <print s1 e2><error 'var razdel s oshibkoy2'>
+      v9 '//' e1 = e1
+var2 /procedure/ e1 = <shto /procedure/ e1>
+     /function/ e1 = <shto /function/ e1>
+     /begin/ ( e1 ) /end/ '.' e2 = <libput'int main() { '> <operatorper e1>+
+           <libput ' }'><posle e2>
+     s(L)1 e(LD)2 ',' e3 ':' v9  ';' e4 +
+         = <Br s1 e2 '=' 'per' <smena v9>><var1 v9 '//' ',' e3> <var2 e4>   
+     s(L)1 e(LD)2 ':' v9  ';' e4 +
+         = <Br s1 e2 '=' 'per' <smena v9>> <var2 e4>          
+     e1 = <error 'posle opisaniya var oshibka' >
+
+shto /procedure/ s(L)1 e(LD)2 ( e3 ) ';' /var/ e6 /begin/ (e4) /end/ ';' e5 +
+         =<Br s1 e2 '=' 'proc'><libput 'void ' s1 e2 ' (' <param e3> +
+           ') { '><probelch '1'><novper e6><opproc e4><ochist <Dgall>>+
+            <libput '}'>+
+           <probelch '0'><shto e5>
+     /procedure/ s(L)1 e(LD)2 ( e3 ) ';' /begin/ (e4) /end/ ';' e5 +
+         = <Br s1 e2 '=' 'proc'><libput 'void ' s1 e2 ' (' <param e3> +
+            ') { '><probelch '1'><opproc e4><ochist <Dgall>><libput '}'>+
+            <probelch '0'><shto e5>
+     /function/ s(L)1 e(LD)2 ( e3 ) ':' v9 ';' /var/ e6 /begin/ ( e4 )+
+         /end/ ';' e5+
+    = <Br s1 e2 '=' 'func'><libput <smena v9> ' ' s1 e2 ' (' <param e3> +
+         ') { '><probelch '1'><novper e6><opfun e4><ochist1 <Dgall>>+
+         <libput '}'>+
+         <probelch '0'><shto e5>
+     /function/ s(L)1 e(LD)2 ( e3 ) ':' v9 ';' /begin/ ( e4 )+
+          /end/ ';' e5+
+    = <Br s1 e2 '=' 'func'><libput <smena v9> ' ' s1 e2 ' (' <param e3> +
+            ') { '><probelch '1'><opfun  e4><ochist1 <Dgall>><libput '}'>+
+       <probelch '0'><shto e5>
+     /begin/ ( e1 ) /end/ '.' e2 =<libput'int main() { '>+
+           <probelch '1'>+
+            <operatorper e1>+
+           <ochist2 <Dgall>><libput '}'><probelch '0'><posle e2>
+     e1 = <error 'v postanovke programmi'>
+
+param s(L)1 e(LD)2 e3 ':' v9 ';' e4 +
+       = <Br s1 e2 '=' 'prpar'> <smena v9> ' ' s1 e2 <varp1 e3><varp2 ';' e4>  
+      s(L)1 e(LD)2 e3 ':' v9  +
+       = <Br s1 e2 '=' 'prpar'> <smena v9> ' ' s1 e2 <varp1 e3>          
+      s1 e2 = <error 'oshibka v parametrah procedury'>     
+varp1 ',' s(L)1 e(LD)2 e3 = <Br s1 e2 '=' 'prpar'> ', ' s1 e2 <varp1 e3>
+      s1 e2 = <error 'oshibka v parametrah procedury11'>
+      e1 = e1
+varp2 ';' s(L)1 e(LD)2 e3 ':' v9 ';' e4 +
+          = <Br s1 e2 '=' 'prpar'> ';' <smena v9> ' ' s1 e2 +
+            <varp1 e3><varp2 ';' e4>
+      ';' s(L)1 e(LD)2 e3 ':' v9  +
+          = <Br s1 e2 '=' 'prpar'> ';' <smena v9> ' ' s1 e2 +
+            <varp1 e3>
+      s1 e2 = <error 'oshibka v parametrax procedury22'>
+      =
+
+
+
+
+novper s(L)1 e(LD)2 e3 ':' v9 ';' e4 +
+           = <Br s1 e2 '=' 'prper'>+
+            <libput <post <Cp 'prob'>><smena v9> ' ' s1 e2 +
+              <nov1 e3> +
+              ';' ><nov2 e4>         
+       e2 = <error 'oshibka v opisanii peremennix procedury'>
+nov1 ',' s(L)1 e(LD)2 e3 = <Br s1 e2 '=' 'prper'> ', ' s1 e2 <nov1 e3>
+      s1 e2 = <error 'oshibka v opisanii peremennix procedury'>
+      e1 = e1
+nov2 s(L)1 e(LD)2 e3 ':' v9 ';' e4 +
+        = <Br s1 e2 '=' 'prper'><libput <post <Cp 'prob'>><smena v9>' ' s1 e2+
+           <nov1 e3>+
+           '; ' ><nov2 e4>      
+     s2 e1 = <error 'oshibka v procedue'>
+      =
+opproc /writeln/ ( e1 ) e2 = <libput <post <Cp 'prob'>>'printf (' +
+           <write e1>');'>+
+             <opproc1 e2>
+       /begin/ (e1) /end/ e2 = <libput <post <Cp 'prob'>> '{'><probelch '1'>+
+                <opproc e1><probelch '0'><libput <post <Cp 'prob'>>'}'>+
+             <opproc1 e2>
+       /repeat/ (e1) /until/ e2 ';' e3 = <libput <post <Cp 'prob'>>'do {'>+
+               <probelch '1'>+
+               <opproc e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris e2> ');'>+
+              <opproc1 ';' e3>
+       /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>>'do {'>+
+            <probelch '1'>+
+             <opproc e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris  e2> ');'>
+       /while/ e1 /do/ e2 ';'e3 = +
+               <libput <post <Cp 'prob'>>'while (' <pris e1> ')'>+
+              <probelch '1'>+
+               <op e2><probelch '0'><opproc1 ';' e3>
+       /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>>'while (' +
+                 <pris e1> ')'>+
+                   <probelch '1'><opproc e2><probelch '0'>
+       /for/ e1 ':=' e2 /to/ e3 /do/ e4 ';' e5 =+
+            <libput <post <Cp 'prob'>>'for (' +
+            <fop e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fop e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fop e1 '/' <Cp e1>> '++)'><probelch '1'> <op e4>+
+             <probelch '0'>+
+           <opproc1 ';' e5>
+       /for/ e1 ':=' e2 /to/ e3 /do/ e4  =<libput <post <Cp 'prob'>>'for (' +
+            <fop e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fop e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fop e1 '/' <Cp e1>> '++)'><probelch '1'> <op e4>+
+                 <probelch '0'>
+       /case/ e1 /of/ (e2) /endcase/ e3=<libput <post <Cp 'prob'>>'switch ('+
+                  <fop e1 '/'<Cp e1>>+
+    ') { '><probelch '1'><off e2> <libput <post<Cp 'prob'>>'default : { }'>+
+              <probelch '0'>+
+         <libput <post <Cp 'prob'>>'}'><opproc1 e3>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            ';' e6 = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+             <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'><opproc1 ';' e6>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+             <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'>
+       /if/ e1 /then/ ( e2 ) /else/ e3 ';' e4 = + 
+              <libput <post <Cp 'prob'>>'if ('<pris e1> ' )'>+
+           <probelch '1'><op e2><probelch '0'>+
+           <libput <post <Cp 'prob'>>'else '><probelch '1'>+
+           <op e3> <probelch '0'><opproc1 ';' e4>
+       /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>>'if (' +
+                <pris e1> ' )'>+
+           <probelch '1'><op e2><probelch '0'>+
+            <libput <post <Cp 'prob'>>'else '>+
+           <probelch '1'><op e3><probelch '0'>
+       s(L)1 e(LD)2 ':=' e3 ';' e4 = <libput <post <Cp 'prob'>> s1 e2 '/'+
+          <fop <Cp s1 e2>>+
+            <vrem s1 e2'/' e3>';'>+
+           <opproc1 ';' e4>
+       s(L)1 e(LD)2 ':=' e3  = <libput <post <Cp 'prob'>><fop s1 e2 '/'+
+           <Cp s1 e2>>  <vrem s1 e2'/'e3>';'>
+       s(L)1 e(LD)2 ( e3 ) e4 = <libput <post <Cp 'prob'>><vpr s1 e2 '/' +
+            <Cp s1 e2>>+
+            '(' <write e3> ');'>+
+           <opproc1 e4>
+       s1 e2 = <error 'oshibka operatorov111'>
+             =
+      
+
+opproc1 ';' /writeln/ (e1) e2 =<libput <post <Cp 'prob'>>'printf (' +
+             <write e1>');'><opproc1 e2>
+   ';' /begin/ (e1) /end/ e2=<libput <post <Cp 'prob'>>'{'><probelch '1'>+
+        <opproc e1>+
+        <probelch '0'><libput<post <Cp 'prob'>> '}'><opproc1 e2>
+   ';' /repeat/ (e1) /until/ e2 ';' e3 = <libput <post <Cp 'prob'>>'do {'>+
+            <probelch '1'>+
+             <opproc e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris  e2> ');'>+
+               <opproc1 ';' e3>
+   ';' /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>>'do {'>+
+               <probelch '1'>+
+               <opproc e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris  e2> ');'>
+   ';' /while/ e1 /do/ e2 ';' e3 = <libput<post <Cp 'prob'>> 'while (' +
+                <pris e1> ')'>+
+          <probelch '1'><op e2><probelch '0'><opproc1 ';' e3>
+   ';'/while/ e1 /do/ e2 = <libput<post <Cp 'prob'>> 'while (' <pris e1> ')'>+
+        <probelch '1'><opproc e2><probelch '0'>
+   ';' /for/ e1 ':=' e2 /to/ e3 /do/ e4 ';' e5=<libput <post <Cp 'prob'>>+
+             'for (' <fop e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fop e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fop e1 '/' <Cp e1>> '++)'> <probelch '1'><op e4>+
+            <probelch '0'><opproc1 ';' e5>
+   ';' /for/ e1 ':=' e2 /to/ e3 /do/ e4 =<libput <post <Cp 'prob'>>+
+           'for (' <fop e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fop e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fop e1 '/' <Cp e1>> '++)'><probelch '1'> +
+             <opproc e4><probelch '0'>
+   ';' /case/ e1 /of/ (e2) /endcase/ e3 = <libput <post <Cp 'prob'>>+
+             'switch (' <fop e1 '/'+
+             <Cp e1>>+
+          ') ' '{ '><probelch '1'><off e2><libput <post <Cp 'prob'>>+
+            'default : { }'>+
+            <probelch '0'>+
+           <libput <post <Cp 'prob'>>'}'><opproc1 e3>
+   ';' /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            ';' e6 = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5> ';'><opproc1 ';' e6>
+   ';' /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5> ';'>
+   ';' /if/ e1 /then/ ( e2 ) /else/ e3 ';' e4 = <libput <post <Cp 'prob'>>+
+             'if (' <pris e1>')'>+
+           <probelch '1'><op e2><probelch '0'>+
+            <libput <post <Cp 'prob'>>'else '>+
+            <probelch '1'><op e3>+
+           <probelch '0'><opproc1 ';' e4>
+   ';' /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>> 'if (' +
+            <pris e1>')'>+
+           <probelch '1'><op e2><probelch '0'><libput <post <Cp 'prob'>>+
+           'else '><probelch '1'><opproc e3>+
+           <probelch '0'>
+   ';' s(L)1 e(LD)2 ':=' e3 ';' e4 = <libput <post <Cp 'prob'>><fop s1 e2 '/'+
+           <Cp s1 e2>>  <vrem s1 e2'/' e3>';'>+
+           <opproc1 ';' e4>
+   ';' s(L)1 e(LD)2 ':=' e3  = <libput <post <Cp 'prob'>> <fop s1 e2 '/' +
+          <Cp s1 e2>> <vrem s1 e2'/'e3>';'>
+   ';' s(L)1 e(LD)2 ( e3 ) e4 =<libput <post <Cp 'prob'>>  <vpr s1 e2 '/' +
+              <Cp s1 e2>>+
+           '(' <write e3> ');'>+
+           <opproc1 e4>
+       s2 e1 = <error 'oshibka operatorov222'> <print s2 e1>
+       e1 = e1
+
+opfun /writeln/ ( e1 ) e2 = <libput <post <Cp 'prob'>>'printf (' <write e1>+
+            ');'><opfun1 e2>
+       /begin/ (e1) /end/ e2 = <libput <post <Cp 'prob'>>'{'><probelch '1'>+
+             <opfun e1><probelch '0'><libput <post <Cp 'prob'>>'}'><opfun1 e2>
+       /repeat/ (e1) /until/ e2 ';' e3 = <libput <post <Cp 'prob'>>'do {'>+
+               <probelch '1'><opfun e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris  e2> ');'>+
+              <opfun1 ';' e3>
+       /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>>'do {'>+
+              <probelch '1'><opfun e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris  e2> ');'>
+       /while/ e1 /do/ e2 ';' e3 = <libput <post <Cp 'prob'>>'while (' +
+              <pris e1> ')'><probelch '1'><op2 e2><probelch '0'><opfun1 ';'e3>
+       /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>>'while (' <pris e1>+
+              ')'><probelch '1'><opfun e2><probelch '0'>
+      /for/ e1 ':=' e2 /to/ e3 /do/ e4';'e5 =<libput <post <Cp 'prob'>>+
+            'for (' <fopf e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopf e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopf e1 '/' <Cp e1>> '++)'><probelch '1'> <op2 e4>+
+           <probelch '0'><opfun1 ';' e5>
+      /for/ e1 ':=' e2 /to/ e3 /do/ e4 =<libput <post <Cp 'prob'>>'for (' +
+            <fopf e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopf e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopf e1 '/' <Cp e1>> '++)'><probelch '1'> <opfun e4>+
+           <probelch '0'>
+      /case/ e1 /of/ (e2) /endcase/ e3=<libput <post <Cp 'prob'>>'switch ('+
+            <fopf e1 '/'<Cp e1>>+
+              ') ' '{ '><probelch '1'><offf e2><libput <post <Cp 'prob'>>+
+             'default : { }'><probelch '0'><libput <post <Cp 'prob'>>'}'>+
+             <opfun1 e3>
+      /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            ';' e6 = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'><opfun1 ';' e6>
+     /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'>
+     /if/ e1 /then/ ( e2 ) /else/ e3';'e4 = <libput <post <Cp 'prob'>>+
+            'if (' <pris e1>')'><probelch '1'>+
+           <op2 e2><probelch '0'><libput <post <Cp 'prob'>> 'else '>+
+            <probelch '1'><op2 e3><probelch '0'><opfun1 ';'e4>
+     /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>>'if (' +
+            <pris e1>')'>+
+           <probelch '1'><op2 e2><probelch '0'><libput <post <Cp 'prob'>>+
+           'else '><probelch '1'><opfun e3><probelch '0'>
+       s(L)1 e(LD)2 ':=' e3 ';' e4 = <libput <post <Cp 'prob'>> s1 e2 '/'+
+           <fopf <Cp s1 e2>>+
+            <vrem s1 e2'/' e3>';'>+
+           <opfun1 ';' e4>
+       s(L)1 e(LD)2 ':=' e3  = <libput <post <Cp 'prob'>><fopf s1 e2 '/'+
+           <Cp s1 e2>> <vrem s1 e2'/' e3>';'>
+       s(L)1 e(LD)2 ( e3 ) e4 = <libput <post <Cp 'prob'>><vpr s1 e2 '/' +
+           <Cp s1 e2>>+
+            '(' <write e3> ');'>+
+           <opfun1 e4>
+       e1 = <error 'oshibka operatorov111'>
+      
+
+opfun1 ';' /writeln/ (e1) e2 =<libput <post <Cp 'prob'>>'printf (' +
+            <write e1>');'><opfun1 e2>
+   ';' /begin/ (e1) /end/ e2=<libput <post <Cp 'prob'>>'{'><probelch '1'>+
+           <opfun e1><probelch '0'><libput <post <Cp 'prob'>>'}'><opfun1 e2>
+   ';' /repeat/ (e1) /until/ e2 ';' e3 = <libput <post <Cp 'prob'>>'do {'>+
+            <probelch '1'><opfun e1>+
+              <probelch '0'><libput <post <Cp 'prob'>>'} while (' <pris  e2>+
+                ');'><opfun1 ';' e3>
+   ';' /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>>'do {'> +
+            <probelch '1'><opfun e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris  e2> ');'>
+   ';' /while/ e1 /do/ e2 ';'e3= <libput <post <Cp 'prob'>>'while (' +
+            <pris e1> ')'><probelch '1'><op2 e2><probelch '0'><opfun1 ';'e3>
+   ';' /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>>'while (' <pris e1> +
+           ')'><probelch '1'><opfun e2><probelch '0'>
+   ';'/for/ e1 ':=' e2 /to/ e3 /do/ e4';'e5=<libput <post <Cp 'prob'>>'for ('+
+             <fopf e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopf e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopf e1 '/' <Cp e1>> '++)'><probelch '1'><op2 e4>+
+              <probelch '0'><opfun1 ';' e5>
+   ';'/for/ e1 ':=' e2 /to/ e3 /do/ e4 =<libput <post <Cp 'prob'>>'for (' +
+           <fopf e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopf e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopf e1 '/' <Cp e1>> '++)'><probelch '1'> <op2 e4>+
+           <probelch '0'>
+   ';' /case/ e1 /of/ (e2) /endcase/ e3 = <libput <post <Cp 'prob'>>+
+             'switch (' <fopf e1 '/'+
+             <Cp e1>>+
+   ') '><libput <post <Cp 'prob'>>'{ '><probelch '1'><offf e2><libput +
+         <post <Cp 'prob'>>'default : { }'><probelch '0'><libput <post +
+         <Cp 'prob'>> '}'><opfun1 e3>
+   ';' /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            ';' e6 = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'><opfun1 ';' e6>
+   ';' /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'>
+   ';' /if/ e1 /then/ ( e2 ) /else/ e3 ';' e4= <libput <post <Cp 'prob'>>+
+          'if (' <pris e1>')'><probelch '1'>+
+           <op2 e2><probelch '0'><libput <post <Cp 'prob'>>'else '>+
+            <probelch '1'><op2 e3><probelch '0'><opfun1 ';' e4>
+   ';' /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>>+
+           'if (' <pris e1>')'>+
+           <probelch '1'><op2 e2><probelch '0'><libput <post <Cp 'prob'>>+
+            'else '><probelch '1'><op2 e3><probelch '0'>
+   ';' s(L)1 e(LD)2 ':=' e3 ';' e4 = <libput <post <Cp 'prob'>> +
+            <fopf s1 e2 '/'+
+           <Cp s1 e2>> <vrem s1 e2'/'e3>';'>+
+           <opfun1 ';' e4>
+   ';' s(L)1 e(LD)2 ':=' e3  = <libput <post <Cp 'prob'>> <fopf s1 e2 '/' +
+          <Cp s1 e2>> <vrem s1 e2'/' e3>';'>
+   ';' s(L)1 e(LD)2 ( e3 ) e4 = <libput <post <Cp 'prob'>> <vpr s1 e2 '/' +
+            <Cp s1 e2>>+
+           '(' <write e3> ');'>+
+           <opfun1 e4>
+       s2 e1 = <error 'oshibka operatorov222'>
+       e1 = e1
+
+ochist e1 (e2 '=' 'proc') e3 = <polog (e2 '=' 'proc') e3>
+       e1 = <error 's kopilkoy problems'>
+ochist1 e1 (e2 '=' 'func') e3 = <polog (e2 '=' 'func') e3>
+       e1 = <error 's kopilkoy problems'>
+polog e1 (e2 '=' e3) = <Br e2 '=' e3><polog e1>
+      e1 = e1
+
+op     /writeln/ ( e1 ) =<libput <post <Cp 'prob'>> 'printf ('<write e1> ');'>
+       /begin/ (e1) /end/  = <libput <post <Cp 'prob'>>'{'><probelch '1'>+
+             <opproc e1><probelch '0'><libput <post <Cp 'prob'>>'}'>
+       /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>>'do {'><opproc e1>+
+              <libput <post <Cp 'prob'>> '} while (' <pris  e2> ');'>
+       /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>> 'while (' <pris e1> +
+               ')'><op e2>
+       /for/ e1 ':=' e2 /to/ e3 /do/ e4 = <libput <post <Cp 'prob'>> +
+             'for (' <fop e1 '/'+
+            <Cp e1>>+
+           '=' <ch e2> '; '<fop <Cp e1>> '<='+
+           <ch e3> '; ' <fop <Cp e1>> '++)'> <op e4>
+       /case/ e1 /of/ (e2) /endcase/ = <libput <post <Cp 'prob'>>'switch (' +
+            <fop e1 '/'+
+           <Cp e1>>+
+       ') '><libput <post <Cp 'prob'>>'{ '><off e2><libput <post <Cp 'prob'>>+
+            'default : { }'><post <Cp 'prob'>><libput <post <Cp 'prob'>> '}'>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>>
+       /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>> 'if (' +
+            <pris e1>')'>+
+           <op e2><libput <post <Cp 'prob'>> 'else '><op e3>
+       s(L)1 e(LD)2 ':=' e3  =  <libput <post <Cp 'prob'>> <fop s1 e2 '/'+
+            <Cp s1 e2>> <vrem s1 e2 '/' e3>';'>
+       s(L)1 e(LD)2 ( e3 ) = <libput <post <Cp 'prob'>> <vpr s1 e2 '/' +
+              <Cp s1 e2>>+
+             '(' <write e3> ');'>
+       e1 = <error 'oshibka operatorov333'>
+
+op2     /writeln/ ( e1 )=<libput <post <Cp 'prob'>>'printf (' <write e1> ');'>
+       /begin/ (e1) /end/  = <libput <post <Cp 'prob'>>'{'><probelch '1'>+
+              <opfun e1><probelch '0'><libput <post <Cp 'prob'>>'}'>
+       /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>>'do {'>+
+             <probelch '1'><opfun e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris e2> ');'>
+       /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>>'while (' <pris e1> ')'>+
+             <probelch '1'><op2 e2><probelch '0'>
+       /for/ e1 ':=' e2 /to/ e3 /do/ e4 = <libput <post <Cp 'prob'>>'for (' +
+            <fopf e1 '/'+
+            <Cp e1>>+
+           '=' <ch e2> '; '<fopf <Cp e1>> '<='+
+           <ch e3> '; ' <fopf <Cp e1>> '++)'> <probelch '1'><op2 e4>+
+           <probelch '0'>
+       /case/ e1 /of/ (e2) /endcase/ = <libput <post <Cp 'prob'>>+
+              'switch (' <fopf e1 '/'+
+           <Cp e1>>+
+        ') '><libput <post <Cp 'prob'>>'{ '><probelch '1'><off e2><libput+
+             <post <Cp 'prob'>>'default : { }'><probelch '0'><libput <post +
+             <Cp 'prob'>>'}'>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>>
+       /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>>'if (' +
+            <pris e1>')'><probelch '1'>+
+           <op2 e2><probelch '0'><libput 'else '><probelch '1'><op2 e3>+
+            <probelch '0'>
+       s(L)1 e(LD)2 ':=' e3  =  <libput <post <Cp 'prob'>><fopf s1 e2 '/'+
+            <Cp s1 e2>> <vrem s1 e2'/'e3>';'>
+       s(L)1 e(LD)2 ( e3 ) = <libput <post <Cp 'prob'>><vpr s1 e2 '/' +
+           <Cp s1 e2>>+
+             '(' <write e3> ');'>
+       e1 = <error 'oshibka operatorov333'>
+
+op3     /writeln/ ( e1 ) = <libput <post <Cp 'prob'>>'printf ('<write e1>');'>
+       /begin/ (e1) /end/  = <libput<post <Cp 'prob'>> '{'><probelch '1'>+
+            <opglav e1><probelch '0'><libput <post <Cp 'prob'>> '}'>
+       /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>> 'do {'>+
+              <probelch '1'><opglav e1><probelch '0'>+
+              <libput <post <Cp 'prob'>> '} while (' <pris  e2> ');'>
+       /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>> 'while (' <pris e1>+
+           ')'><probelch '1'><op3 e2><probelch '0'>
+       /for/ e1 ':=' e2 /to/ e3 /do/ e4 = <libput<post <Cp 'prob'>>+
+              'for (' <fopg e1 '/'+
+            <Cp e1>>+
+           '=' <ch e2> '; '<fopg <Cp e1>> '<='+
+           <ch e3> '; ' <fopg <Cp e1>> '++)'><probelch '1'> <op3 e4>+
+            <probelch '0'>
+       /case/ e1 /of/ (e2) /endcase/ = <libput<post <Cp 'prob'>> 'switch ('+
+             <fopg e1 '/'+
+           <Cp e1>>+
+        ') ' '{ '><probelch '1'><off e2><probel '0'><libput<post <Cp 'prob'>>+
+              'default : { }'><probelch '0'><libput <post <Cp 'prob'>> '}'>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fop s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>>
+       /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>>+
+             'if (' <pris e1>')'><probelch '1'>+
+           <op3 e2><probelch '0'><libput <post <Cp 'prob'>> 'else '>+
+           <probelch '1'><op3 e3><probelch '0'>
+       s(L)1 e(LD)2 ':=' e3  =  <libput <post <Cp 'prob'>> <fopg s1 e2 '/'+
+            <Cp s1 e2>> <vrem s1 e2'/'e3>';'>
+       s(L)1 e(LD)2 ( e3 ) = <libput <post <Cp 'prob'>><vpr s1 e2 '/' +
+            <Cp s1 e2>>+
+             '(' <write e3> ');'>
+       e1 = <error 'oshibka operatorov333'>
+
+
+opglav /writeln/ ( e1 ) e2 = <libput <post <Cp 'prob'>> 'printf (' +
+         <write e1>');'>+
+         <opglav1 e2>
+       /begin/ (e1) /end/ e2 = <libput<post <Cp 'prob'>> '{'>+
+         <probelch '1'><opglav e1><probelch '0'><libput<post <Cp 'prob'>>+
+          '}'><opglav1 e2>
+       /repeat/ (e1) /until/ e2 ';' e3 = <libput <post <Cp 'prob'>> 'do {'>+
+               <probelch '1'><opglav e1>+
+              <probelch '0'><libput <post <Cp 'prob'>> '} while (' <pris1  e2>+
+               ');'><opglav1 ';' e3>
+       /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>> 'do {'>+
+                    <probelch '1'><opglav e1>+
+              <probelch '0'><libput <post <Cp 'prob'>> '} while (' <pris1  e2>+
+                     ');'>
+       /while/ e1 /do/ e2 ';'e3= <libput <post <Cp 'prob'>> 'while (' +
+          <pris1 e1> +
+          ')'><probelch '1'><op3 e2><probelch '0'><opglav1 ';'e3>
+      /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>> 'while (' <pris1 e1> +
+          ')'><probelch '1'><opglav e2><probelch '0'>
+      /for/ e1 ':=' e2 /to/ e3 /do/ e4 ';' e5=<libput <post <Cp 'prob'>> +
+            'for (' +
+             <fopg e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopg e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopg e1 '/' <Cp e1>> '++)'> <probelch '1'><op3 e4>+
+           <probelch '0'><opglav1 ';' e5>
+      /for/ e1 ':=' e2 /to/ e3 /do/ e4 =<libput <post <Cp 'prob'>> 'for (' +
+             <fopg e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopg e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopg e1 '/' <Cp e1>> '++)'> <probelch '1'><op3 e4>+
+           <probelch '0'>
+       /case/ e1 /of/ (e2) /endcase/ e3=<libput <post <Cp 'prob'>>'switch ('+
+           <fopg e1 '/'<Cp e1>>+
+    ') { '><probelch '1'><offg e2><libput <post <Cp 'prob'>>'default : { }'>+
+            <probelch '0'><libput <post <Cp 'prob'>> '}'><opglav1 e3>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            ';' e6 = <libput <post <Cp 'prob'>><fopg s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'><opglav1 ';' e6>
+       /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            = <libput <post <Cp 'prob'>><fopg s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'>
+       /if/ e1 /then/ (e2 ) /else/ e3';'e4=<libput <post <Cp 'prob'>> 'if (' +
+            <pris1 e1>')'>+
+           <probelch '1'><op3 e2><probelch '0'><libput <post <Cp 'prob'>> +
+            'else '><probelch '1'><op3 e3><probelch '0'><opglav ';' e4>
+       /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>> 'if (' +
+            <pris1 e1>')'>+
+           <probelch '1'><op3 e2><probelch '0'><libput <post <Cp 'prob'>> +
+            'else '><probelch '1'><op3 e3><probelch '0'>
+       s(L)1 e(LD)2 ':=' e3 ';' e4 =<libput <post <Cp 'prob'>> <fopg s1 e2 '/'+
+            <Cp s1 e2>>+
+           <vrem1 s1 e2'/' e3>';'>+
+           <opglav1 ';' e4>
+       s(L)1 e(LD)2 ':=' e3  = <libput <post <Cp 'prob'>> <fopg s1 e2 '/'+
+           <Cp s1 e2>> <vrem1 s1 e2'/' e3>';'>
+       s(L)1 e(LD)2 ( e3 ) e4 = <libput <post <Cp 'prob'>> <vpr s1 e2 '/'+
+             <Cp s1 e2>>+
+            '(' <write e3> ');'>+
+           <opglav1 e4>
+       e1 = <error 'oshibka operatorov111'>
+      
+
+opglav1 ';' /writeln/ (e1) e2 =<libput <post <Cp 'prob'>>'printf (' +
+             <write e1>');'><opglav1 e2>
+   ';' /begin/ (e1) /end/ e2=<libput <post <Cp 'prob'>> '{'><probelch '1'>+
+          <opglav e1><probelch '0'><libput <post <Cp 'prob'>>'}'><opglav1 e2>
+   ';' /repeat/ (e1) /until/ e2 ';' e3 = <libput <post <Cp 'prob'>> 'do {'>+
+             <probelch '1'><opglav e1><probelch '0'>+
+              <libput <post <Cp 'prob'>>'} while (' <pris1  e2> ');'>+
+             <opglav1 ';' e3>
+   ';' /repeat/ (e1) /until/ e2 = <libput <post <Cp 'prob'>> 'do {'>+
+              <probelch '1'><opglav e1><probelch '0'>+
+              <libput <post <Cp 'prob'>> '} while (' <pris1  e2> ');'>
+   ';' /while/ e1 /do/ e2 ';'e3= <libput <post <Cp 'prob'>>'while ('+
+              <pris1 e1>')'>+
+             <probelch '1'><op3 e2><probelch '0'><opglav1 ';'e3>
+   ';' /while/ e1 /do/ e2 = <libput <post <Cp 'prob'>>'while ('<pris1 e1>')'>+
+             <probelch '1'><op3 e2><probelch '0'>
+   ';' /for/ e1 ':=' e2 /to/ e3 /do/ e4 ';'e5=<libput <post <Cp 'prob'>>+
+             'for (' +
+            <fopg e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopg e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopg e1 '/' <Cp e1>> '++)'><probelch '1'><op3 e4>+
+             <probelch '0'><opglav1 ';'e5>
+   ';' /for/ e1 ':=' e2 /to/ e3 /do/ e4 =<libput <post <Cp 'prob'>> 'for (' +
+            <fopg e1 '/' <Cp e1>>+
+           '=' <ch e2> '; '<fopg e1 '/' <Cp e1>> '<='+
+           <ch e3> '; ' <fopg e1 '/' <Cp e1>> '++)'><probelch '1'><op3 e4>+
+             <probelch '0'>
+   ';' /case/ e1 /of/ (e2) /endcase/ e3 = <libput <post <Cp 'prob'>>'switch ('+
+             <fopg e1 '/'+
+             <Cp e1>>+
+   ') ' '{ '><probelch '1'><offg e2><libput <post <Cp 'prob'>>'default : { }'>+
+         <probelch '0'><libput <post <Cp 'prob'>> '}'><opglav1 e3>
+   ';' /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+            ';' e6 = <libput <post <Cp 'prob'>><fopg s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'><opglav1 ';' e6>
+   ';' /if/ e1 /then/ ( s(L)2 e(LD)3 ':=' e4 ) /else/  s(L)2 e(LD)3 ':=' e5 +
+             = <libput <post <Cp 'prob'>><fopg s2 e3 '/'<Cp s2 e3>> '='+
+            <pris e1> ' ? ' +
+            <pris e4> ' : ' <pris e5>';'>
+   ';' /if/ e1 /then/ ( e2 ) /else/ e3 ';'e4= <libput <post <Cp 'prob'>>'if ('+
+               <pris1 e1>')'><probelch '1'>+
+           <op3 e2><probelch '0'><libput <post <Cp 'prob'>>'else '>+
+            <probelch '1'>+
+            <op3 e3><probelch '0'><opglav1 ';' e4>
+   ';' /if/ e1 /then/ ( e2 ) /else/ e3 = <libput <post <Cp 'prob'>> 'if (' +
+               <pris1 e1>')'><probelch '1'>+
+           <op3 e2><probelch '0'><libput <post <Cp 'prob'>>'else '>+
+            <probelch '1'>+
+            <op3 e3><probelch '0'>
+   ';' s(L)1 e(LD)2 ':=' e3 ';' e4 =<libput <post <Cp 'prob'>><fopg s1 e2 '/'+
+           <Cp s1 e2>> <vrem1 s1 e2'/'e3>';'>+
+           <opglav1 ';' e4>
+   ';' s(L)1 e(LD)2 ':=' e3  = <libput <post <Cp 'prob'>><fopg s1 e2 '/' +
+          <Cp s1 e2>> <vrem1 s1 e2'/'e3>';'>
+   ';' s(L)1 e(LD)2 ( e3 ) e4 = <libput <post <Cp 'prob'>><vpr s1 e2 '/' +
+           <Cp s1 e2>>+
+           '(' <write e3> ');'>+
+           <opglav1 e4>
+       s2 e1 = <error 'oshibka operatorov222'>
+       e1 = e1
+ochist2 e1 = e1
+
+smena /boolean/ = 'bool'
+      /integer/ = 'int'
+      v1 = <error 'nazvnie tipa neverno'>
+
+write e1 ',' e2 = <vir e1> ',' <write e2>
+                 s1 e2 = <vir s1 e2>
+                 e1 = e1
+
+fop e1 '/' 'prper' = e1
+    e1 '/' 'prpar' = e1
+    e1 = <print e1> <error 'ne opisano perem'>
+fopf e1 '/' 'prper' = e1
+    e1 '/' 'prpar' = e1
+    e1 '/' e2 = <vuf e1'/'<Dgall>>
+fopg e1 '/' 'perbool' = e1
+    e1 '/' 'perint' = e1
+    e1 = <error 'ne opisano perem1'>
+
+vuf e1 '/' e2 (e3'=''func')e4(e1'=''func')e5= <error 'visov function'>
+    e1 '/' e2(e1'=''func')e3 = e1 <polog e2(e1'=''func')e3>
+    e1 '/' e2 = <error 'visov function'>
+
+foo1 e1 '/' 'prper' = e1
+    e1 '/' 'prpar' = e1
+    e1 '/' 'c' = e1
+    e1 = <print e1>  <error 'ne opisano perem2'>
+foo e1 '/' 'perbool' = e1
+    e1 '/' 'perint' = e1
+    e1 '/' 'c' = e1
+    e1 = <error 'ne opisano perem3'>
+
+vpr e1 '/' 'proc' = e1
+    e1 = <error 'vizov nesyshestv prceduri'>
+
+vfu e1 '/' 'func' = e1
+    e1 = <error 'visov nesushestv function'>
+ch e('+-')1 s(D)2 e(D)3 = e1 s2 e3
+              e1 = <error 'for neverno'>
+
+off e('+-')1 s(D)2 e(D)3 ':' e4 ';' e5= <Libput <post <Cp 'prob'>> 'case '+
+                   e1 s2 e3 ' : '><probelch '1'>+
+                 <op e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <off1 ';' e5>
+    e('+-')1 s(D)2 e(D)3 ':' e4 = <Libput <post <Cp 'prob'>>'case ' e1 s2 +
+                 e3 ' : '><probelch '1'>+
+                 <op e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>
+              /true/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                 'case (true) : '><probelch '1'><op e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <off1 ';' e2>
+              /true/ ':' e1 = <Libput <post <Cp 'prob'>>'case (true) : '>+
+                     <probelch '1'><op e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+              /false/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                 'case (false) : '><probelch '1'><op e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <off1 ';' e2>
+              /false/ ':' e1 = <Libput <post <Cp 'prob'>>+
+                     'case (false) : '><probelch '1'><op e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+               e1 = <error 'case osibochno1'>
+off1 ';' e('+-')1 s(D)2 e(D)3 ':' e4 ';' e5= <Libput <post <Cp 'prob'>>+
+                'case ' e1 s2 e3 ' : '><probelch '1'>+
+                 <op e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                <off1 ';' e5>
+    ';' e('+-')1 s(D)2 e(D)3 ':' e4 = <Libput <post <Cp 'prob'>>'case ' e1+
+                 s2 e3 ' : '><probelch '1'>+
+                 <op e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>
+             ';' /true/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                  'case (true) : '><probelch '1'><op e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <off1 ';' e2>
+             ';'/true/ ':' e1 = <Libput <post <Cp 'prob'>>'case (true) : '>+
+                     <probelch '1'><op e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+             ';' /false/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                   'case (false) : '><probelch '1'><op e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <off1 ';' e2>
+             ';' /false/ ':' e1 = <Libput <post <Cp 'prob'>>+
+                    'case (false) : '><probelch '1'><op e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+               e1 = <error 'case osibochno2'>  
+offf e('+-')1 s(D)2 e(D)3 ':' e4 ';' e5= <Libput <post <Cp 'prob'>>'case ' e1+
+                  s2 e3 ' : '><probelch '1'>+
+                 <op2 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                <offf1 ';' e5>
+    e('+-')1 s(D)2 e(D)3 ':' e4 = <Libput <post <Cp 'prob'>>'case ' e1 s2 e3+
+                 ' : '><probelch '1'>+
+                 <op2 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>
+              /true/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                  'case (true) : '><probelch '1'><op2 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offf1 ';' e2>
+              /true/ ':' e1 = <Libput <post <Cp 'prob'>>'case (true) : '>+
+                     <probelch '1'><op2 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+              /false/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                     'case (false) : '><probelch '1'><op2 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offf1 ';' e2>
+              /false/ ':' e1 = <Libput <post <Cp 'prob'>>'case (false) : '>+
+                      <probelch '1'><op2 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+               e1 = <error 'case osibochno3'>
+offf1 ';' e('+-')1 s(D)2 e(D)3 ':' e4 ';' e5= <Libput <post <Cp 'prob'>>+
+                 'case ' e1 s2 e3 ' : '><probelch '1'>+
+                 <op2 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                 <offf1 ';' e5>
+    ';' e('+-')1 s(D)2 e(D)3 ':' e4 = <Libput <post <Cp 'prob'>>'case '+
+                  e1 s2 e3 ' : '><probelch '1'>+
+                 <op2 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>
+             ';' /true/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                  'case (true) : '><probelch '1'><op2 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offf1 ';' e2>
+             ';' /true/ ':' e1 = <Libput <post <Cp 'prob'>>'case (true) : '>+
+                      <probelch '1'><op2 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+             ';' /false/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                   'case (false) : '><probelch '1'><op2 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offf1 ';' e2>
+             ';' /false/ ':' e1 = <Libput <post <Cp 'prob'>>+
+                     'case (false) : '><probelch '1'><op2 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+               e1 = <error 'case osibochno4'>  
+offg e('+-')1 s(D)2 e(D)3 ':' e4 ';' e5= <Libput <post <Cp 'prob'>>+
+                 'case ' e1 s2 e3 ' : '><probelch '1'>+
+                 <op3 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offg1 ';' e5>
+    e('+-')1 s(D)2 e(D)3 ':' e4 = <Libput <post <Cp 'prob'>>'case ' e1 s2 +
+                 e3 ' : '><probelch '1'>+
+                 <op3 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>
+              /true/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                   'case (true) : '><probelch '1'><op3 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offg1 ';' e2>
+              /true/ ':' e1 = <Libput <post <Cp 'prob'>>'case (true) : '>+
+                      <probelch '1'><op3 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+              /false/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                  'case (false) : '><probelch '1'><op3 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offg1 ';' e2>
+              /false/ ':' e1 = <Libput <post <Cp 'prob'>>'case (false) : '>+
+                     <probelch '1'><op3 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+               e1 = <error 'case osibochno5'>
+offg1 ';' e('+-')1 s(D)2 e(D)3 ':' e4 ';' e5= <Libput <post <Cp 'prob'>>+
+                 'case ' e1 s2 e3 ' : '><probelch '1'>+
+                 <op3 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                 <offg1 ';' e5>
+    ';' e('+-')1 s(D)2 e(D)3 ':' e4 = <Libput <post <Cp 'prob'>>'case ' e1+
+                 s2 e3 ' : '><probelch '1'>+
+                 <op3 e4><libput <post <Cp 'prob'>>'break; '><probelch '0'>
+             ';' /true/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                  'case (true) : '><probelch '1'><op3 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                   <offg1 ';' e2>
+             ';' /true/ ':' e1 = <Libput <post <Cp 'prob'>>+
+                       'case (true) : '><probelch '1'><op3 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+             ';' /false/ ':' e1 ';' e2 = <Libput <post <Cp 'prob'>>+
+                   'case (false) : '><probelch '1'><op3 e1>+
+                  <libput <post <Cp 'prob'>>'break; '><probelch '0'>+
+                  <offg1 ';' e2>
+             ';' /false/ ':' e1 = <Libput <post <Cp 'prob'>>+
+                      'case (false) : '><probelch '1'><op3 e1>+
+                     <libput <post <Cp 'prob'>>'break; '><probelch '0'>
+               e1 = <error 'case osibochno6'>   
+
+vrem e1 '/' e2 '+' e1 e3 = '+=' <pris e2 e3>
+     e1 '/' e1 '+' e2 = '+=' <pris e2>
+     e1 '/' e1 '-' e2 = '+=-' <pris e2>
+     e1 '/' e2 = '=' <pris e2> 
+vrem1 e1 '/' e2 '+' e1 e3 = '+=' <pris1 e2 e3>
+     e1 '/' e1 '+' e2 = '+=' <pris1 e2>
+     e1 '/' e1 '-' e2 = '+=-' <pris1 e2>
+     e1 '/' e2 = '=' <pris1 e2> 
+          
+
+pris            e1 '>' e2 = <vir e1>'>' <vir e2>
+                e1 '<' e2 = <vir e1> '<' <vir e2>
+                e1 '<>' e2 = <vir e1> '<>' <vir e2>
+                e1 '=' e2 = <vir e1> '='  <vir e2>
+                e1 '>=' e2 = <vir e1> '>=' <vir e2>
+                e1 '<=' e2 = <vir e1>  '<=' <vir e2> 
+                s1 e2 = <vir s1 e2>
+                 = <error 'oshibka prisvaivaniya'>
+vir R           e1 s('+-')2 e3 = <vir e1> s2 <slag e3>
+                e1 'or' e3 = <vir e1> '||' <slag e3> 
+                s1 e2 = <slag s1 e2>
+                e1 = <error 'oshibka virageniya'>
+slag            e1 '*' e2 = <slag e1> '*'  <dop e2>
+                e1 'div' e2 = <slag e1> '/'  <dop e2>
+                e1 'mod' e2 = <slag e1> '%'  <dop e2>
+                e1 'and' e2 = <slag e1> '&&' <dop e2>
+                s1 e2 = <dop s1 e2>
+                e1 = <error 'ohibka slagaemogo'>
+dop             s(L)1 e(LD)2 = <foo s1 e2 '/' <Cp s1 e2>>
+                s(L)1 e(LD)2 ( e3 ) = <vfu s1 e2 '/' <Cp s1 e2>>+
+                       '(' <write e3> ')'
+               ( e1 ) = '(' <vir e1> ')'
+               s(D)1 e(D)2 = s1 e2
+               /true/ = 'true'
+               /false/ = 'false'
+               'not' e1 = '! (' <dop e1> ')'
+                e1 = <error 'ooshibka slagaemogo'>   
+
+pris1            e1 '>' e2 = <vir1 e1>'>' <vir1 e2>
+                e1 '<' e2 = <vir1 e1> '<' <vir1 e2>
+                e1 '<>' e2 = <vir1 e1> '<>' <vir1 e2>
+                e1 '=' e2 = <vir1 e1> '='  <vir1 e2>
+                e1 '>=' e2 = <vir1 e1> '>=' <vir1 e2>
+                e1 '<=' e2 = <vir1 e1>  '<=' <vir1 e2>
+                s1 e2 = <vir1 s1 e2>
+                 = <error 'oshibka prisvaivaniya'>
+vir1 R           e1 s('+-')2 e3 = <vir1 e1> s2 <slag1 e3>
+                e1 'or' e3 = <vir1 e1> '||' <slag1 e3> 
+                s1 e2 = <slag1 s1 e2>
+                e1 = <error 'oshibka virageniya'>
+slag1            e1 '*' e2 = <slag1 e1> '*'  <dop1 e2>
+                e1 'div' e2 = <slag1 e1> '/'  <dop1 e2>
+                e1 'mod' e2 = <slag1 e1> '%'  <dop1 e2>
+                e1 'and' e2 = <slag1 e1> '&&' <dop1 e2>
+                s1 e2 = <dop1 s1 e2>
+                e1 = <error 'ohibka slagaemogo'>
+dop1            s(L)1 e(LD)2 = <foo1 s1 e2 '/' <Cp s1 e2>>
+                s(L)1 e(LD)2 ( e3 ) = <vfu s1 e2 '/' <Cp s1 e2>>+
+                       '(' <write e3> ')'
+               ( e1 ) = '(' <vir1 e1> ')'
+               s(D)1 e(D)2 = s1 e2
+               /true/ = 'true'
+               /false/ = 'false'
+               'not' e1 = '! (' <dop1 e1> ')'
+                e1 = <error 'ooshibka slagaemogo'>   
+
+operatorper e1 =<varr <Dgall>><varrw <Dgall>><opglav e1>
+varr e1 (e2 '=' 'perint') e3 = <libput 'int ' e2 <varr1 e3>>+
+         <polog e1 (e2 '=' 'perint')>
+     e1 = e1 <polog e1>
+varr1 e1 (e2 '=' 'perint') e3 = ',' e2 <varr1 e3>+
+         <polog e1 (e2 '=' 'perint')>
+     e1 = ';' <polog e1>
+
+varrw e1 (e2 '=' 'perbool') e3 = <libput 'bool ' e2 <varrw1 e3>>+
+       <polog e1 (e2 '=' 'perbool')>
+     e1 = e1 <polog e1>
+varrw1 e1 (e2 '=' 'perbool') e3 = ',' e2 <varrw1 e3>+
+       <polog e1 (e2 '=' 'perbool')>
+     e1 = ';' <polog e1>
+
+probelch '1' = <probelch1 '1' '/' <Dgall>>
+         '0' = <probelch1 '0' '/' <Dgall>>
+
+probelch1 '1' '/' e1 ('prob' '='  s(N)2)= <polog e1 ('prob' '=' <p1 s(N)2>)>
+         '0' '/' e1 ('prob' '=' s(N)2)= <polog e1 ('prob' '=' <m1 s(N)2>)>
+          e1 = e1
+post /0/ = 
+     s(N)1 = ' ' <post <m1 s1>> 
+
+
+posle e1 = e1
+program
+procedure
+function
+writeln
+integer
+boolean
+const
+var
+begin
+repeat
+until
+while
+do
+for
+to
+case
+of
+endcase
+if
+then
+else
+true
+false
+
+error e1 = <print e1>  
+END

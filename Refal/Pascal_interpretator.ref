@@ -1,0 +1,267 @@
+ START
+   entry go
+   empty integer,boolean
+   empty program,const,var,begin,endd,if,else,case,endcase,for,while,repeat,until,do
+   empty true,false,writeln,then,to,of,umn,del,mod
+   extrn PROUT
+   extrn CHARTOF,NUMB,SYMB
+   extrn BR,CP,RP,DGALL
+   extrn OPNGET,CLSGET,LIBGET
+   extrn ADD,SUB,MUL,DR,DIV
+
+go = <Interpretate <lexan <readf>>> <dgall> <clsget> 
+
+*---------------------------------- считываем текст ---------------------------------------------------- 
+    *считываем текст
+readf  = <opnget 'test.txt'> <readf1 <libget>>
+readf1 v1 = v1 <readf1 <libget>>
+          = 
+*------------------------------ раздел программы  -------------------------------------
+
+lexan 'program ' v1 = /program/ <name <dell <paring v1>>>
+				 e1 = <prout 'The program has to begin from the word "program"'>
+
+paring  e1 ')' e2 = <paring <par1 e1> e2>
+		e1 '(' e2 = 'ERROR' 
+               e1 = e1
+ 
+par1 R e1 '(' e2 = e1 (e2)
+		      e1 = 'ERROR'  
+
+dell e1 (e2) e3 = <dell1 e1> (<dell e2>) <dell e3>
+			 e1 = <dell1 e1>
+
+dell1 e1 '	' e2 = <dell1 e1 ' ' e2>
+	  e1 '  ' e2 = <dell1 e1 ' ' e2>
+              e1 = e1              
+
+name s(L)1 e(LD)2 ';' e3 = <prout 'program ' s1 e2 ';' e3> s1 e2 ';' <after_name e3>
+					  e1 = <prout 'ERROR in program name'>
+
+after_name ' const ' v1 ';' ' var ' v2 ';' ' begin ' e3 = /const/ <lexvar <lexconst v1 > ';' ' var ' v2 ';' ' begin ' e3> 
+		                  ' const ' v1 ';' ' begin ' e2 = /const/ <lexmain <lexconst v1> ' begin ' e2>
+				            ' var ' v1 ';' ' begin ' e2 = <lexvar ' var ' v1 ';' ' begin ' e2>
+						                   ' begin ' v1 = <lexmain ' begin ' v1>
+								                     e1 = <prout 'Wrong : only program name '>
+
+*------------------------------ раздел констант -----------------------------------------------------------------------
+
+lexconst v1 '=' v2 '; ' v3 = <check_idc v1 '=' v2> ';' <lexconst v3>
+			     v1 '=' v2 = <check_idc v1 '=' v2>
+			            e1 = <prout e1> 'ERROR' 
+
+check_idc s(L)1 e(LD)2 '=' v3 = s1 e2 '=' <constanta v3> <br s1 e2 '=' v3>
+			               e1 = 'ERROR'
+
+constanta e('+-')1 v(D)2 = e1 v2
+					  e1 = 'ERROR'
+
+*---------------------------- раздел переменных ----------------------------------------------------------------------
+			  
+lexvar 		            e1 'ERROR' e2 = <prout 'ERROR in CONST section'>
+	   e1 ' var ' v2 ';' ' begin ' e3 = e1 <lexmain /var/ <lexv v2> ';' ' begin ' e3>
+						   	       e1 = <prout 'ERROR in VAR section'>
+
+lexv v1 '; ' v2 = <lexvario v1> ';' <lexv v2>
+             v1 = <lexvario v1>
+                = 'ERROR' 
+			   
+lexvario v1 ',' v2 ':' v3 = <lexname v1>':'<lext v3> <br v1 '=' v3> <lexvario v2 ':' v3>
+				v1 ':' v2 = <lexname v1>':'<lext v2> <br v1 '=' v2> 
+				e1 = 'ERROR'
+				
+lexname v1 ',' v2 = <check_idv v1> <lexname v2> 
+			   v1 = <check_idv v1>
+			      = 'ERROR'
+
+check_idv s(L)1 e(LD)2 = s1 e2
+			        e1 = 'ERROR'
+		
+lext 'integer' = /integer/
+	 'boolean' = /boolean/
+			e1 = 'ERROR'
+
+*------------------------------ раздел основной --------------------------------------------------------
+			
+lexmain             e1 'ERROR' e2 = <prout 'ERROR in CONST or VAR section'>
+		e1 ' begin ' v2 'end.' e3 = e1 /begin/ (<lexm v2>) /endd/ '.' e3
+			    	   	       e1 = <prout 'ERROR in NO OPERATORS'>
+															
+lexm R e1 ' end ' e2 = <lexmm e1> /endd/ <lexmmm e2>
+     e1 ' begin ' e2 = 'ERROR'
+			      e1 = <lexmmm e1>							  
+
+lexmm e1 ' begin ' e2 = <lexm e1> /begin/ (<lexmmm e2>) 
+				   e1 = 'ERROR'
+
+lexmmm R v1 '; ' v2 = <lexm v1> ';' <lexop v2>
+			     e1 = <lexop e1>
+					   
+lexop                  e1 ':=' e2 = <arif e1 ':=' e2> <prout e1 '{}' e2>
+	         	     'writeln' e2 = <lexwrite 'writeln' e2>
+	    ' repeat ' v1 ' until' v2 = <post_cycle 'repeat' v1 'until' v2>
+	         ' while ' v1 'do' v2 = <pred_cycle 'while' v1 'do' v2>
+	     'for' v1 'to' v2 'do' v3 = <cycle_for 'for' v1 'to' v2 'do' v3>
+	  'case' v1 'of' v2 'endcase' = <select 'case' v1 'of' v2 'endcase'>
+	  'if' v1 'then' v2 'else' v3 = <cond 'if' v1 'then' v2 'else' v3>
+							   v1 = <prout v1> <prout 'ERROR in section OPERATOR'>   
+							      = <prout 'OK'>
+							    
+*------------------------------ выражение---------------------------------------------------------------				   
+
+arif e1 ':=' e2 = <check_per e1> ':=' <expres e2>    
+
+check_per s(L)1 e(LD)2 = s1 e2 
+					e1 = 'ERROR'
+
+expres R v1 '>=' v2 = <expres v1> '>=' <vir v2>
+	   R v1 '<=' v2 = <expres v1> '<=' <vir v2>
+	   R v1  '<' v2 = <expres v1> '<'  <vir v2>
+	   R v1  '>' v2 = <expres v1> '>'  <vir v2>
+	   R v1 '==' v2 = <expres v1> '==' <vir v2>
+	   R v1 '<>' v2 = <expres v1> '<>' <vir v2>
+				 e1 = <vir e1>
+				 										
+vir R e1 s('+-')3 v2 = <vir e1>  s3  <slagu <slag v2>>
+	R v1  ' or '  v2 = <vir v1> '||' <slagu <slag v2>>										   
+			 	  e1 = <slagu <slag e1>>													   
+												 
+slag R v1 ' mod ' v2 = <slag v1 '%' v2> 
+	 R v1 ' div ' v2 = <slag v1 '/' v2>
+	              e1 = e1
+
+slagu R v1 s('*/%')3 v2 = <slagu v1> s3 <mnog v2> 	
+ 	  R v1 ' and ' v2   = <slagu v1> '&&' <mnog v2>
+				   (v1) = <mnog (v1)> 
+				     e1 = <mnog <erase e1>>
+
+mnog   s(D)1 e(D)2 = <numb s1 e2> 
+	          (v1) = (<vir v1>)
+	        'true' = /true/
+           'false' = /false/
+     s(L)1 e(LD)2  = <chartof s1 e2> 
+	     'not'(v1) = '!'(<vir v1>)
+	               = /0/
+	            v1 = 'ERROR' 	
+	 
+*----------------------------------------------------- вывод ---------------------------------------------------------	 
+
+lexwrite 'writeln' e1  = /writeln/ <wrr e1>
+
+wrr v1 ',' v2 = <elem v1> <wrr v2>
+		   v1 = <elem v1>
+		      = 'ERROR'
+					
+elem v1 = <expres v1>
+
+*---------------------------------------- цикл с постусловием -----------------------------------------
+
+post_cycle ' repeat ' v1 ' until ' v2 =  /repeat/ <rep v1> /until/ <rep v2>
+
+rep R v1 ')' v2 = <re v1> v2
+	  v1 '(' v2 = 'ERROR'
+	  		 v2 = 'ERROR'
+
+re '(' v1 = (<wrr v1>)
+	   e1 = 'ERROR'	
+
+*------------------------------------- цикл с предусловием -------------------------------------------	   
+
+pred_cycle ' while ' v1 'do' v2 = /while/ <whi v1> 'do' <whi v2>
+
+whi R v1 ')' v2 = <wh v1> v2
+	  v1 '(' v2 = 'ERROR'
+	  		 v2 = 'ERROR'
+
+wh '(' v1 = (<wrr v1>)
+	   e1 = 'ERROR'	
+
+*------------------------------------- cycle for ---------------------------------------------------
+
+cycle_for ' for ' v1 ' to ' v2 ' do ' v3 = +
+								/for/ <f1 v1> /to/ <f1 v2> /do/ <f1 v3>
+
+f1 R v1 ')' v2 = <f2 v1> v2
+	 v1 '(' v2 = 'ERROR'
+	  		v2 = 'ERROR'
+
+f2 '(' v1 = (<wrr v1>)
+	   e1 = 'ERROR'	
+
+*----------------------------------- case -------------------------------------------------------------
+
+select 'case' v1 'of' v2 'endcase' = /case/ <c1 v1> /of/ <c1 v2> /endcase/
+
+c1 R v1 ')' v2 = <c2 v1> v2
+	 v1 '(' v2 = 'ERROR'
+	  		v2 = 'ERROR'
+
+c2 '(' v1 = (<wrr v1>)
+	   e1 = 'ERROR'	
+
+
+*-------------------------------------if else ------------------------------------------------------------------
+
+cond 'if' v1 'then' v2 'else' v3 = /if/ <if1 v1> /then/ <if1 v2> /else/ <if1 v3>
+
+if1 R v1 ')' v2 = <if2 v1> v2
+	  v1 '(' v2 = 'ERROR'
+	  		 v2 = 'ERROR'
+
+if2 '(' v1 = (<wrr v1>)
+	    e1 = 'ERROR'	
+
+*---------------------------------- useful not main functions ----------------------
+
+erase e1 ' ' e2 = e1 <erase e2>
+          s1 e2 = s1 e2
+                = 
+
+*----------------------------------- Интерпретация программы -------------------------------------
+
+Interpretate /program/ e1 ';' e2 = <constt e2>
+
+constt v1 /var/ v2 = <varr v2>
+
+varr v1 ';' /begin/ v2 = <beginn /begin/ v2>
+
+beginn /begin/ (v1) /endd/'.' = <oper v1>
+
+oper v1 ';' v2 = <operator v1> <oper v2>
+			e1 = <operator e1>
+
+operator s(L)1 e2 ':=' v3 = <prisvaivanie <chartof s1 e2> ':=' <calculation v3>>
+		    /writeln/(v1) = <find v1>
+
+*-------------------- Вычисление выражения -------------------------------------------------------
+
+prisvaivanie v1 ':=' v2 = <rp v1 '=' v2> 
+
+calculation R e1 s('+-')3 e2 = <cal1 <calculation e1> s3 <sl e2>>
+                          e1 = <sl e1>
+
+cal1 e1'+'e2 = <add (e1) e2>
+     e1'-'e2 = <sub (e1) e2>
+
+sl R e1 s('*/%')3 e2 = <cal2 <sl e1> s3 <sl e2>>
+        	    (e1) = <mn (e1)>
+          	      e1 = <prout e1> <mn <symb e1>>
+
+cal2 e1 '*' e2 = <mul (e1) e2>
+     e1 '/' e2 = <div (e1) e2>
+     e1 '%' e2 = <sub (e1) <mul (<div (e1) e2>) e2>>
+
+mn        (e1) = <calculation e1>
+   s(L)1e(LD)2 = <CP s1 e2>
+         v(D)1 = <numb v1>
+	 
+*------------------------------------------	 
+find v1  = <find1 <cp v1>>
+find1 'ERROR' = <prout ''><prout 'Interpretation was incorrect:('>
+	       v1 = <prout ''><prout 'Your result: ' v1>
+
+END
+
+*a:=-(145+324-146/146-(32*0/(5-4))-500)+5;  ответ 37
+
+*27 mod 14 div 3 mod 3

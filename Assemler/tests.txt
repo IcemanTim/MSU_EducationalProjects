@@ -1,0 +1,21 @@
+ Тесты:
+    1) Вводим: 1 
+               abcd1234efgh56789I.
+       Выводит: abcd1234efgh56789I
+	        ВЫПОЛНЕНО УСЛОВИЕ
+	        abcdabcdefghefghiI
+    2) Вводим: 1
+               KabcdefghijK.
+       Выводит: KabcdefghijK
+                НЕ ВЫПОЛНЕНО УСЛОВИЕ
+                KKaabbccddeeffgghhiijjKK
+    3) Вводим: 1
+               zyXwv.
+       Выводит: zyXwv
+                НЕ ВЫПОЛНЕНО УСЛОВИЕ
+                zzyyXXwwvv   
+    4) Вводим: 1
+               0123456789A.
+       Выводит: 0123456789А
+                ВЫПОЛНЕНО УСЛОВИЕ
+                0abcdefghiA           
